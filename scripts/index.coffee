@@ -11,6 +11,7 @@ _log = ->
 # takes   |> eventQueue
 # returns |> new eventQueue with chained keypress events as a single `typedKeys` event
 consolidateKeypresses = (eventQueue) ->
+  _log "consolidateKeypresses called, eventQueue.length: #{eventQueue.length}"
   newQueue = []
   chainStart = false
   typedKeys =
@@ -33,10 +34,12 @@ consolidateKeypresses = (eventQueue) ->
     else
       if prevEventType is 'keypress'
         chainStart = false # close the chain
+        _log 'typedKeys being pushed', typedKeys
         newQueue.push typedKeys
       else
         newQueue.push ev
 
+  _log "Key presses consolidated, new eventQueue.length: #{newQueue.length}"
   newQueue
 
 
@@ -44,25 +47,28 @@ consolidateKeypresses = (eventQueue) ->
 # returns |> new eventQueue with explicit waits between each action
 #         @todo: optimize the waiting between
 addExplicitWaits = (eventQueue) ->
+  _log "addExplicitWaits called, eventQueue.length: #{eventQueue.length}"
   newQueue = []
   for ev,i in eventQueue
     newQueue.push ev
     timeDiff = eventQueue[i + 1]?.timeStamp - ev.timeStamp
     explicitWait =
       type: 'explicitWait' # could also be 'waitFor'
-      targetElemCssPath: null # possibly used later to wait for element to show
+      targetSelector: null # possibly used later to wait for element to show
       timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
       timeToWait: if not _.isNaN timeDiff then timeDiff else 0
+    _log 'explicitWait being pushed', explicitWait
     newQueue.push explicitWait
 
+  _log "Waits added, new eventQueue.length: #{newQueue.length}"
   newQueue
 
 
 # takes   |> eventObj
 # returns |> string equivalent of jeeves method
 _findJeevesMethod = (eventObj) ->
-  switch eventObj.type
+  meth = switch eventObj.type
     when 'explicitWait' then 'explicitWait'
     when 'click'        then 'clickElementByCss'
     when 'typedKeys'    then 'typeKeys'
@@ -70,6 +76,8 @@ _findJeevesMethod = (eventObj) ->
       console.error 'keypress event found! Should have been consolidated already.'
       null
     else null
+  _log "_findJeevesMethod called, method returned: #{meth}"
+  meth
 
 
 # takes   |> eventObj
@@ -78,11 +86,12 @@ _findMethodArgs = (eventObj) ->
   args = []
   switch eventObj.type
     when 'explicitWait'
-      args.push eventObj.timeToWait
+      args.push eventObj.timeToWait / 1000
     when 'click'
-      args.push eventObj.targetElemCssPath
+      args.push eventObj.targetSelector
     when 'typedKeys'
       args.push eventObj._keys.join ''
+  _log "_findMethodArgs called, args returned: #{JSON.stringify args}"
   args
 
 
