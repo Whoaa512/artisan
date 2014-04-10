@@ -2,6 +2,11 @@ _ = require 'lodash'
 async = require 'async'
 Jeeves = require 'jeeves'
 wd = require 'wd'
+LOGS_ON = no
+
+_log = ->
+  if LOGS_ON
+    console.log.apply this, arguments
 
 # takes   |> eventQueue
 # returns |> new eventQueue with chained keypress events as a single `typedKeys` event
