@@ -117,10 +117,9 @@ queueRunner = (actionList, done) ->
         driver
           .get('http://localhost:8000')
           .nodeify next
-    ,
     ]
 
-  async.series tasks, done
+  async.series setupTasks.concat(tasks), done
 
 
 ##########################
