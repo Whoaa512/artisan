@@ -9,7 +9,7 @@ watchEvents = ['keypress', 'click']
 eventQueue = null
 session = null
 navigator = null
-window.foo = eventQueue
+
 startRecording = ->
   session = new Session()
   navigator = new Navigator _.pick window.navigator, ['product', 'productSub', 'userAgent', 'vendor', 'language', 'appCodeName', 'appName', 'appVersion', 'cookieEnabled']
@@ -44,3 +44,6 @@ getTypeSpecificData = (event)->
   config =
     keypress: ['keyCode']
   JSON.stringify _.pick(event, config[event.type])
+
+window.stopRecording = stopRecording
+window.startRecording = startRecording
