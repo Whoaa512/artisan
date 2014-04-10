@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Whoaa512/artisan/issues"
   },
-  "homepage": "https://github.com/Whoaa512/artisan"
+  "homepage": "https://github.com/Whoaa512/artisan",
+  "dependencies": {
+    "async": "^0.7.0",
+    "jeeves": "0.0.2",
+    "lodash": "^2.4.1",
+    "wd": "^0.2.17"
+  }
 }
