@@ -16,7 +16,7 @@ startRecording = ->
   eventQueue = new EventQueue()
   _.each watchEvents, (eventType)->
     $(window).on eventType, (event)->
-      eventQueue.add getEventData(event)
+      eventQueue.add getEventData(event, eventQueue.at(eventQueue.length - 1)?.get('timeStamp') or Date.now())
 
 stopRecording = ->
   session?.save
@@ -24,16 +24,11 @@ stopRecording = ->
     eventQueue: eventQueue
   window.eventQueue = eventQueue
 
-startRecording()
-# setTimeout ->
-#   stopRecording()
-# , 5000
-
 getEventData = (event, lastTimeStamp)->
   currentTime = Date.now()
   new Event
     timeStamp: currentTime
-    sinceLastEvent: currentTime - lastTimeStamp or 0
+    sinceLastEvent: currentTime - (lastTimeStamp or 0)
     type: event.type
     targetSelector: getCSSSelector event
     eventDataJSON: getTypeSpecificData event
