@@ -1,6 +1,7 @@
 _ = require 'lodash'
 async = require 'async'
-jeeves = require 'jeeves'
+Jeeves = require 'jeeves'
+wd = require 'wd'
 
 # takes   |> eventQueue
 # returns |> new eventQueue with chained keypress events as a single `typedKeys` event
@@ -101,8 +102,14 @@ buildList = (eventQueue) ->
 # takes   |> actionList
 # returns |> execution of list using methods from jeeves
 queueRunner = (actionList, done) ->
+  driver = new wd.promiseChainRemote()
+  jeeves = new Jeeves driver
+
   tasks = _.map actionList, (action) ->
     (next) ->
       jeeves[action.method].apply null, action.args.concat next
+
+  tasks.unshift (next) ->
+    driver.init browserName: process.env.WDBROWSER ? 'phantomjs', next
 
   async.series tasks, done
