@@ -22,8 +22,8 @@ consolidateKeypresses = (eventQueue) ->
         _.defaults typedKeys, ev
         try delete typedKeys.meta.pressedKey
 
-      # update timestamp to be the last key pressed
-      typedKeys.timestamp = ev.timestamp
+      # update timeStamp to be the last key pressed
+      typedKeys.timeStamp = ev.timeStamp
       typedKeys._keys.push ev.pressedKey
     else
       if prevEventType is 'keypress'
@@ -42,11 +42,11 @@ addExplicitWaits = (eventQueue) ->
   newQueue = []
   for ev,i in eventQueue
     newQueue.push ev
-    timeDiff = eventQueue[i + 1].timestamp - ev.timestamp
+    timeDiff = eventQueue[i + 1].timeStamp - ev.timeStamp
     explicitWait =
       eventType: 'explicitWait' # could also be 'waitFor'
       targetElemCssPath: null # possibly used later to wait for element to show
-      timestamp: ev.timestamp + 1 # timestamp the wait 1ms after prev event
+      timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
       timeToWait: timeDiff if not _.isNan timeDiff else 0
     newQueue.push explicitWait

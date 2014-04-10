@@ -6,20 +6,20 @@ userObj =
 queueOfEvents = [
     eventType: Sting |> [click, keypress]
     targetElemCssPath: Sting |> [css, id, class]
-    timestamp: Time # interpret waiting period based on timestamp
+    timeStamp: Time # interpret waiting period based on timeStamp
     meta: # Object
       pressedKey: String # only on keypress events
   ,
     # explicitWait =
     eventType: 'explicitWait' # could also be 'waitFor'
     targetElemCssPath: null # possibly used later to wait for element to show
-    timestamp: event.timestamp + 1 # timestamp the wait 1ms after prev event
+    timeStamp: event.timeStamp + 1 # timeStamp the wait 1ms after prev event
     meta: null
     timeToWait: timeDiff
   ,
     eventType: Sting |> [click, keypress]
     targetElemCssPath: Sting |> [css, id, class]
-    timestamp: Time # interpret waiting period based on timestamp
+    timeStamp: Time # interpret waiting period based on timeStamp
     meta: Object
   ]
 
