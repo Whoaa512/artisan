@@ -12,7 +12,7 @@ query.ascending('timeStamp').find().then (events)->
   _.each events, (event)->
     eventData.push event.attributes
 
-  fs.writeFile 'event-data.txt', JSON.stringify(eventData), (err)->
+  fs.writeFile 'event-data.json', JSON.stringify(eventData), (err)->
     if err then throw err
 
 
