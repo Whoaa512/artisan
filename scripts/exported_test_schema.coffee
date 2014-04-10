@@ -1,11 +1,11 @@
-userObj =
-  session_id
-  environment_info
-  user_id
+# userObj =
+#   session_id
+#   environment_info
+#   user_id
 
 queueOfEvents = [
-    eventType: Sting |> [click, keypress]
-    targetElemCssPath: Sting |> [css, id, class]
+    eventType: Sting # |> [click, keypress]
+    targetElemCssPath: Sting # |> [css, id, class]
     timeStamp: Time # interpret waiting period based on timeStamp
     meta: # Object
       pressedKey: String # only on keypress events
@@ -17,8 +17,8 @@ queueOfEvents = [
     meta: null
     timeToWait: timeDiff
   ,
-    eventType: Sting |> [click, keypress]
-    targetElemCssPath: Sting |> [css, id, class]
+    eventType: Sting # |> [click, keypress]
+    targetElemCssPath: Sting # |> [css, id, class]
     timeStamp: Time # interpret waiting period based on timeStamp
     meta: Object
   ]
