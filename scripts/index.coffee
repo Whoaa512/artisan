@@ -2,6 +2,7 @@ _ = require 'lodash'
 async = require 'async'
 Jeeves = require 'jeeves'
 wd = require 'wd'
+{readJsonSync} = require 'fs-extra'
 LOGS_ON = no
 
 _log = ->
@@ -137,37 +138,7 @@ queueRunner = (actionList, done) ->
 
 
 ##########################
-dummyJson = [
-    "timeStamp": 1397166449749
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div.click-elem-two.container > div.same-class.box"
-  ,
-    "timeStamp": 1397166450139
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div.click-elem-two.container > div.same-class.box"
-  ,
-    "timeStamp": 1397166450621
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div > div.click-elem-one.box"
-  ,
-    "timeStamp": 1397166451769
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div.overlay-text > p.not-block"
-  ,
-    "timeStamp": 1397166452501
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div > div.modal"
-  ,
-    "timeStamp": 1397166453251
-    "sinceLastEvent": 0
-    "type": "click"
-    "targetSelector": "div.modal > button"
-  ]
+dummyJson = readJsonSync 'event-data.json'
 
 actionList = buildList dummyJson
 console.log 'List built~ Running actions'
