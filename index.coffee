@@ -48,7 +48,7 @@ addExplicitWaits = (eventQueue) ->
       targetElemCssPath: null # possibly used later to wait for element to show
       timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
-      timeToWait: timeDiff if not _.isNan timeDiff else 0
+      timeToWait: if not _.isNan timeDiff then timeDiff else 0
     newQueue.push explicitWait
 
   newQueue
@@ -96,7 +96,7 @@ parseQueue = _.compose addExplicitWaits, consolidateKeypresses
 
 buildList = (eventQueue) ->
   consolidateQueue = parseQueue eventQueue
-    actionList = _.map consolidateQueue, actionBuilder
+  actionList = _.map consolidateQueue, actionBuilder
 
 
 # takes   |> actionList
