@@ -107,7 +107,7 @@ queueRunner = (actionList, done) ->
 
   tasks = _.map actionList, (action) ->
     (next) ->
-      jeeves[action.method].apply null, action.args.concat next
+      jeeves[action.method].apply jeeves, action.args.concat next
 
   setupTasks = [
       (next) ->
