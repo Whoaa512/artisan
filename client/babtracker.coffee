@@ -44,4 +44,3 @@ getTypeSpecificData = (event)->
   config =
     keypress: ['keyCode']
   JSON.stringify _.pick(event, config[event.type])
-
