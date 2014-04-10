@@ -1,13 +1,28 @@
 fs = require 'fs'
+_ = require 'lodash'
 Parse = require('parse').Parse
+
 Parse.initialize "3KYb9b80UNTXltAM6bGuWRrxRlSu816sa07Cqkk1", "AZxCHrOxKH5LydCGBeTHY4GO4yFpj3GSPkUNGkqF"
 
-# Session = Parse.
-# query = new Parse.Query Event
-# query.find().then (object)->
-#   object.sort (a,b)->
-#     a.get 'timeStamp' - b.get 'timeStamp'
-#   results = []
-#   _.each object, (model)->
-#     results.push _.pick(model, 'attributes')
-#   console.log JSON.stringify results
+Event = Parse.Object.extend 'Event'
+query = new Parse.Query Event
+query.ascending('timeStamp').find().then (events)->
+  eventData = []
+  console.log events[0].attributes
+  _.each events, (event)->
+    eventData.push event.attributes
+
+  fs.writeFile 'event-data.txt', JSON.stringify(eventData), (err)->
+    if err then throw err
+
+
+
+
+
+# sessionQuery
+# query.ascending('createdAt').limit(10).find().then (sessions)->
+#   _.each sessions, (session)->
+#     console.log session.get('eventQueue')
+# withResponse = (sessionId)->
+#   return (results)->
+#     eventQueues[sessionId] = results
