@@ -9,13 +9,13 @@ consolidateKeypresses = (eventQueue) ->
   newQueue = []
   chainStart = false
   typedKeys =
-    eventType: 'typedKeys'
+    type: 'typedKeys'
     _keys: []
 
   for ev,i in eventQueue
-    prevEventType = eventQueue[i - 1].eventType ? null
+    prevEventType = eventQueue[i - 1]?.type ? null
 
-    if ev.eventType is 'keypress'
+    if ev.type is 'keypress'
       if not chainStart
         chainStart = true
         # copy relevant info on first keypress
@@ -42,13 +42,13 @@ addExplicitWaits = (eventQueue) ->
   newQueue = []
   for ev,i in eventQueue
     newQueue.push ev
-    timeDiff = eventQueue[i + 1].timeStamp - ev.timeStamp
+    timeDiff = eventQueue[i + 1]?.timeStamp - ev.timeStamp
     explicitWait =
-      eventType: 'explicitWait' # could also be 'waitFor'
+      type: 'explicitWait' # could also be 'waitFor'
       targetElemCssPath: null # possibly used later to wait for element to show
       timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
-      timeToWait: if not _.isNan timeDiff then timeDiff else 0
+      timeToWait: if not _.isNaN timeDiff then timeDiff else 0
     newQueue.push explicitWait
 
   newQueue
@@ -57,7 +57,7 @@ addExplicitWaits = (eventQueue) ->
 # takes   |> eventObj
 # returns |> string equivalent of jeeves method
 _findJeevesMethod = (eventObj) ->
-  switch eventObj.eventType
+  switch eventObj.type
     when 'explicitWait' then 'explicitWait'
     when 'click'        then 'clickElementByCss'
     when 'typedKeys'    then 'typeKeys'
@@ -68,10 +68,10 @@ _findJeevesMethod = (eventObj) ->
 
 
 # takes   |> eventObj
-# returns |> array of args based on eventObj.eventType
+# returns |> array of args based on eventObj.type
 _findMethodArgs = (eventObj) ->
   args = []
-  switch eventObj.eventType
+  switch eventObj.type
     when 'explicitWait'
       args.push eventObj.timeToWait
     when 'click'
@@ -109,7 +109,57 @@ queueRunner = (actionList, done) ->
     (next) ->
       jeeves[action.method].apply null, action.args.concat next
 
-  tasks.unshift (next) ->
-    driver.init browserName: process.env.WDBROWSER ? 'phantomjs', next
+  setupTasks = [
+      (next) ->
+        driver.init browserName: process.env.WDBROWSER ? 'phantomjs', next
+    ,
+      (next) ->
+        driver
+          .get('http://localhost:8000')
+          .nodeify next
+    ,
+    ]
 
   async.series tasks, done
+
+
+##########################
+dummyJson = [
+    "timeStamp": 1397166449749
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div.click-elem-two.container > div.same-class.box"
+  ,
+    "timeStamp": 1397166450139
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div.click-elem-two.container > div.same-class.box"
+  ,
+    "timeStamp": 1397166450621
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div > div.click-elem-one.box"
+  ,
+    "timeStamp": 1397166451769
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div.overlay-text > p.not-block"
+  ,
+    "timeStamp": 1397166452501
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div > div.modal"
+  ,
+    "timeStamp": 1397166453251
+    "sinceLastEvent": 0
+    "type": "click"
+    "targetSelector": "div.modal > button"
+  ]
+
+actionList = buildList dummyJson
+console.log 'List built~ Running actions'
+
+queueRunner actionList, (error) ->
+  if error then console.log 'Error!', error
+  console.log 'Done running actions'
+  process.exit 0
