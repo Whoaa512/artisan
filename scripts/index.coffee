@@ -27,11 +27,11 @@ consolidateKeypresses = (eventQueue) ->
         chainStart = true
         # copy relevant info on first keypress
         _.defaults typedKeys, ev
-        try delete typedKeys.meta.pressedKey
 
-      # update timeStamp to be the last key pressed
-      typedKeys.timeStamp = ev.timeStamp
-      typedKeys._keys.push ev.pressedKey
+      # update endTimeStamp to match the last key pressed
+      typedKeys.endTimeStamp = ev.timeStamp
+      keyCode = (JSON.parse ev.eventDataJSON)?.keyCode
+      typedKeys._keys.push String.fromCharCode(keyCode)
     else
       if prevEventType is 'keypress'
         chainStart = false # close the chain
