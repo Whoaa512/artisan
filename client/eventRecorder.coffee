@@ -1,21 +1,67 @@
-
 Event = Parse.Object.extend 'Event'
+
 EventQueue = Parse.Collection.extend
   model: Event
+
 Navigator = Parse.Object.extend 'Navigator'
 
 Session = Parse.Object.extend 'Session',
   startRecording: (sessionName = 'general')->
     @eventQueue = new EventQueue()
     @navigator = new Navigator _.pick window.navigator, ['product', 'productSub', 'userAgent', 'vendor', 'language', 'appCodeName', 'appName', 'appVersion', 'cookieEnabled']
-    _.each @get 'eventTypes', (eventType)=>
-      $(window).on eventType, (event)=>
+    myJax = $.ajax
+    $.ajax = (params...) =>
+      setCallBack params, @eventQueue
+      @eventQueue.add new Event
+        timeStamp: Date.now()
+        sinceLastEvent: Date.now() - @eventQueue.at(@eventQueue.length - 1)?.get('timeStamp') or Date.now()
+        type: 'jQueryAJAXOut'
+        eventDataJSON: {params}
+      myJax.apply $, params
+    _.each @get('eventTypes'), (eventType) =>
+      $(window).on eventType, (event) =>
         @eventQueue.add getEventData(event, @eventQueue.at(@eventQueue.length - 1)?.get('timeStamp') or Date.now())
 
   stopRecording: ->
     @save
       eventQueue: @eventQueue
       navigator: @navigator
+
+  setCallBack = (params, eventQueue)=>
+    objFound = _.reduce params, (
+      (seenObj, param)=>
+        if _.isObject(param)
+          theirSuccessCallback = param.success
+          theirFailureCallback = param.error
+          param.success = ()=>
+            eventQueue.add new Event
+              timeStamp: Date.now()
+              sinceLastEvent: Date.now() - eventQueue.at(eventQueue.length - 1)?.get('timeStamp') or Date.now()
+              type: 'jQueryAJAXIn'
+              eventDataJSON: {params, response:arguments}
+            theirSuccessCallback? arguments
+          param.error = ()=>
+            eventQueue.add new Event
+              timeStamp: Date.now()
+              sinceLastEvent: Date.now() - eventQueue.at(eventQueue.length - 1)?.get('timeStamp') or Date.now()
+              type: 'jQueryAJAXIn'
+              eventDataJSON: {params, response:arguments}
+            theirFailureCallback? arguments
+    ), false
+    unless objFound
+      Array.prototype.push.call params,
+        success: =>
+          eventQueue.add new Event
+            timeStamp: Date.now()
+            sinceLastEvent: Date.now() - eventQueue.at(eventQueue.length - 1)?.get('timeStamp') or Date.now()
+            type: 'jQueryAJAXIn'
+            eventDataJSON: {params, response:arguments}
+        error: =>
+          eventQueue.add new Event
+            timeStamp: Date.now()
+            sinceLastEvent: Date.now() - eventQueue.at(eventQueue.length - 1)?.get('timeStamp') or Date.now()
+            type: 'jQueryAJAXIn'
+            eventDataJSON: {params, response:arguments}
 
   getEventData = (event, lastTimeStamp)->
     currentTime = Date.now()
@@ -36,12 +82,11 @@ Session = Parse.Object.extend 'Session',
   getTypeSpecificData = (event)->
     config =
       keypress: ['keyCode']
-    JSON.stringify _.pick(event, config[event.type])
+    _.pick event, config[event.type]
 
 session = new Session
-  sessionName: 'general'
+  sessionName: 'booo'
   eventTypes: ['click', 'keypress']
 
-
-window.stopRecording = _.bind session.stopRecording, session
-window.startRecording = _.bind session.startRecording, session
+session.startRecording()
+window.stop = _.bind session.stopRecording, session
