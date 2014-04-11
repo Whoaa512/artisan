@@ -151,6 +151,7 @@ dummyJson = readJsonSync 'event-data.json'
 
 actionList = buildList dummyJson
 console.log 'List built~ Running actions'
+_log '~~action list:',actionList
 
 queueRunner actionList, (error) ->
   if error then console.log 'Error!', error
