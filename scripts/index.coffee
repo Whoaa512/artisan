@@ -3,7 +3,7 @@ async = require 'async'
 Jeeves = require 'jeeves'
 wd = require 'wd'
 {readJsonSync} = require 'fs-extra'
-{fetchEventsJson} = require './getEventJson'
+{fetchEventsJson} = require './getEventJson.coffee'
 LOGS_ON = no
 
 _log = ->
@@ -161,10 +161,10 @@ args = require 'nomnom'
       help: 'Flag to turn on debug logging. [default]: false'
       flag: true
       default: false
+  .parse()
 
 
-
-if arg.debug then LOGS_ON = yes
+if args.debug then LOGS_ON = yes
 
 jsonData = actionList = null
 
@@ -177,7 +177,7 @@ async.series
     jsonData = readJsonSync 'event-data.json'
     next()
   buildList: (next) ->
-    actionList = buildList dummyJson
+    actionList = buildList jsonData
     console.log 'List built~'
     _log '~~action list:',actionList
     next()
