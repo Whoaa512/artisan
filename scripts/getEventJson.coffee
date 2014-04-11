@@ -8,7 +8,6 @@ Event = Parse.Object.extend 'Event'
 query = new Parse.Query Event
 query.ascending('timeStamp').find().then (events)->
   eventData = []
-  console.log events[0].attributes
   _.each events, (event)->
     eventData.push event.attributes
 
