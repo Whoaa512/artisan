@@ -11,6 +11,20 @@ _log = ->
     console.log.apply this, arguments
 
 # takes   |> eventQueue
+# returns |> new eventQueue with unused events removed
+removeUnusedEvents = (eventQueue) ->
+  _log "removeUnusedEvents called, eventQueue.length: #{eventQueue.length}"
+  newQueue = []
+
+  for ev,i in eventQueue
+    switch ev.type
+      when 'click'    then newQueue.push ev
+      when 'keypress' then newQueue.push ev
+  _log "Unused events removed, new eventQueue.length: #{newQueue.length}"
+  newQueue
+
+
+# takes   |> eventQueue
 # returns |> new eventQueue with chained keypress events as a single `typedKeys` event
 consolidateKeypresses = (eventQueue) ->
   _log "consolidateKeypresses called, eventQueue.length: #{eventQueue.length}"
@@ -101,7 +115,6 @@ _findMethodArgs = (eventObj) ->
   args
 
 
-
 # takes   |> eventObj
 # returns |> actionObj - equivalent jeeves method + args to complete the action
 actionBuilder = (eventObj) ->
@@ -112,7 +125,7 @@ actionBuilder = (eventObj) ->
 
 # takes   |> eventQueue
 # returns |> actionList - list of actions(runnable methods)
-parseQueue = _.compose addExplicitWaits, consolidateKeypresses
+parseQueue = _.compose addExplicitWaits, consolidateKeypresses, removeUnusedEvents
 
 buildList = (eventQueue) ->
   consolidateQueue = parseQueue eventQueue
