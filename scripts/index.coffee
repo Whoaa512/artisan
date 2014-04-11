@@ -130,7 +130,7 @@ queueRunner = (actionList, done) ->
 
   setupTasks = [
       (next) ->
-        driver.init browserName: process.env.WDBROWSER ? 'phantomjs', next
+        driver.init browserName: process.env.WDBROWSER ? 'chrome', next
     ,
       (next) ->
         driver
