@@ -5,6 +5,7 @@ wd = require 'wd'
 {readJsonSync} = require 'fs-extra'
 {fetchEventsJson} = require './getEventJson.coffee'
 LOGS_ON = no
+WAIT_TO_IGNORE = 100 # in ms
 
 _log = ->
   if LOGS_ON
@@ -46,6 +47,8 @@ consolidateKeypresses = (eventQueue) ->
       # update endTimeStamp to match the last key pressed
       typedKeys.endTimeStamp = ev.timeStamp
       keyCode = ev.eventDataJSON?.keyCode
+      _log '~~keyCode', keyCode
+      _log '~~charFromCode', String.fromCharCode(keyCode)
       typedKeys._keys.push String.fromCharCode(keyCode)
     else
       if prevEventType is 'keypress'
@@ -75,11 +78,11 @@ addExplicitWaits = (eventQueue) ->
       timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
       timeToWait: if not _.isNaN timeDiff then timeDiff else 1
-    if explicitWait.timeToWait >= 250
+    if explicitWait.timeToWait >= WAIT_TO_IGNORE
       _log 'explicitWait being pushed', explicitWait
       newQueue.push explicitWait
     else
-      _log 'explicitWait was lower than 250ms, skipping'
+      _log "explicitWait was lower than #{WAIT_TO_IGNORE}ms, skipping"
 
   _log "Waits added, new eventQueue.length: #{newQueue.length}"
   newQueue
