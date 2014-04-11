@@ -7,7 +7,7 @@ exports.fetchEventsJson = (done) ->
 
   Event = Parse.Object.extend 'Event'
   query = new Parse.Query Event
-  query.ascending('timeStamp').find().then (events)->
+  query.ascending('timeStamp').limit(1000).find().then (events)->
     eventData = []
     _.each events, (event)->
       eventData.push event.attributes
