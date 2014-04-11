@@ -45,7 +45,7 @@ consolidateKeypresses = (eventQueue) ->
 
       # update endTimeStamp to match the last key pressed
       typedKeys.endTimeStamp = ev.timeStamp
-      keyCode = (JSON.parse ev.eventDataJSON)?.keyCode
+      keyCode = ev.eventDataJSON?.keyCode
       typedKeys._keys.push String.fromCharCode(keyCode)
     else
       if prevEventType is 'keypress'
