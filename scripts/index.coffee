@@ -52,15 +52,19 @@ addExplicitWaits = (eventQueue) ->
   newQueue = []
   for ev,i in eventQueue
     newQueue.push ev
-    timeDiff = eventQueue[i + 1]?.timeStamp - ev.timeStamp
+    timeDiff = ev.sinceLastEvent
+    _log "!~~timeDiff: #{timeDiff}"
     explicitWait =
       type: 'explicitWait' # could also be 'waitFor'
       targetSelector: null # possibly used later to wait for element to show
       timeStamp: ev.timeStamp + 1 # timeStamp the wait 1ms after prev event
       meta: null
-      timeToWait: if not _.isNaN timeDiff then timeDiff else 0
-    _log 'explicitWait being pushed', explicitWait
-    newQueue.push explicitWait
+      timeToWait: if not _.isNaN timeDiff then timeDiff else 1
+    if explicitWait.timeToWait >= 250
+      _log 'explicitWait being pushed', explicitWait
+      newQueue.push explicitWait
+    else
+      _log 'explicitWait was lower than 250ms, skipping'
 
   _log "Waits added, new eventQueue.length: #{newQueue.length}"
   newQueue
