@@ -3,6 +3,7 @@ async = require 'async'
 Jeeves = require 'jeeves'
 wd = require 'wd'
 {readJsonSync} = require 'fs-extra'
+{fetchEventsJson} = require './getEventsJson'
 LOGS_ON = no
 
 _log = ->
@@ -147,13 +148,43 @@ queueRunner = (actionList, done) ->
 
 
 ##########################
-dummyJson = readJsonSync 'event-data.json'
+# cli Args
+args = require 'nomnom'
+  .options
+    fecth:
+      abbr: 'f'
+      help: 'Flag to determine if JSON should be freshly fetched. [default]: true'
+      flag: true
+      default: true
+    debug:
+      abbr: 'd'
+      help: 'Flag to turn on debug logging. [default]: false'
+      flag: true
+      default: false
 
-actionList = buildList dummyJson
-console.log 'List built~ Running actions'
-_log '~~action list:',actionList
 
-queueRunner actionList, (error) ->
+
+if arg.debug then LOGS_ON = yes
+
+jsonData = actionList = null
+
+async.series
+  fetchJson: (next) ->
+    if args.fecth
+      fetchEventsJson next
+    else next()
+  readJson: (next) ->
+    jsonData = readJsonSync 'event-data.json'
+    next()
+  buildList: (next) ->
+    actionList = buildList dummyJson
+    console.log 'List built~'
+    _log '~~action list:',actionList
+    next()
+  runQueue: (next) ->
+    console.log 'Running actions~'
+    queueRunner actionList, next
+, (error) ->
   if error then console.log 'Error!', error
   console.log 'Done running actions'
   process.exit 0
