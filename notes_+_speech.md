@@ -14,4 +14,4 @@ Initially, we wanted to create a small library to serve as a lightweight black b
 
 To keep the project within the scope of these 2 days, we decided to target core features of this black box library. Namely, a lightweight approach to capturing user input, and the ability to read & replay that captured input.
 
-Since, there are still a few bugs to smooth out
+For a smooth live demo experience, we've already pre-recorded a sample set of user actions for logging in and sending feedback through martini, which we will show now.
