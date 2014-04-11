@@ -134,7 +134,7 @@ buildList = (eventQueue) ->
 
 # takes   |> actionList
 # returns |> execution of list using methods from jeeves
-queueRunner = (actionList, done) ->
+queueRunner = (actionList, startUrl, done) ->
   driver = new wd.promiseChainRemote()
   jeeves = new Jeeves driver
 
@@ -148,7 +148,7 @@ queueRunner = (actionList, done) ->
     ,
       (next) ->
         driver
-          .get('http://localhost:8000')
+          .get(startUrl)
           .nodeify next
     ]
 
@@ -196,7 +196,8 @@ async.series
     next()
   runQueue: (next) ->
     console.log 'Running actions~'
-    queueRunner actionList, next
+    startUrl = 'http://10.11.12.165:5050/login'
+    queueRunner actionList, startUrl, next
 , (error) ->
   if error then console.log 'Error!', error
   console.log 'Done running actions'
