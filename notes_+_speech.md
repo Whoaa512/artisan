@@ -8,10 +8,10 @@
 
 
 ==================
-Recreating errors seen in the wild can be frustrating, baffling, and sometimes impossible. Combine that fact with the knowledge that new features, and by consequence BUGS, are released frequently means that 100% regression coverage is an unreachable dot on an ever-expanding horizon. With this in mind, we built something to help close this gap.
+Recreating errors seen in the wild can be frustrating, and sometimes impossible. Combine that fact with the knowledge that new features, and by consequence BUGS, are released frequently means that 100% regression coverage is an unreachable dot on an ever-expanding horizon. With this in mind, we built something to help close this gap.
 
-Initially, we wanted to create a small library to serve as a lightweight black box for web apps. Put simply, this library would store information about user  interactions, such as clicks, typing, and timing between those events, in a JSON format. When an error occurred all that interaction data could be emailed and later replayed exactly as the user had done it to aid in the debugging process.
+Initially, we wanted to create a small library to serve as a lightweight black box for web apps. Put simply, this library would store information about user  interactions in a JSON format, such as clicks, typing, and timing between those events. When an error occurs, all that interaction data can be emailed and later replayed exactly as the user had done it to help with the debugging process.
 
-To keep the project within the scope of these 2 days, we decided to target core features of this black box. Namely, a lightweight approach to capturing user input, and the ability to read & replay that captured input.
+To keep the project within the scope of these 2 days, we decided to target core features of this black box library. Namely, a lightweight approach to capturing user input, and the ability to read & replay that captured input.
 
-While, I've been talking up here Kyle has been using the app with this recording enabled. Now we will show the
+Since, there are still a few bugs to smooth out
