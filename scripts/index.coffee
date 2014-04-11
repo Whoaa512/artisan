@@ -138,7 +138,12 @@ queueRunner = (actionList, done) ->
           .nodeify next
     ]
 
-  async.series setupTasks.concat(tasks), done
+  cleanUpTasks = [
+      (next) ->
+        driver.quit next
+    ]
+
+  async.series setupTasks.concat(tasks, cleanUpTasks), done
 
 
 ##########################
