@@ -94,10 +94,10 @@ _findJeevesMethod = (eventObj) ->
   meth = switch eventObj.type
     when 'explicitWait' then 'explicitWait'
     when 'click'        then 'clickElementByCss'
-    when 'typedKeys'    then 'typeKeys'
+    # when 'typedKeys'    then 'typeKeys'
     when 'keypress'
-      console.error 'keypress event found! Should have been consolidated already.'
-      null
+      # console.error 'keypress event found! Should have been consolidated already.'
+      'typeKeys'
     else null
   _log "_findJeevesMethod called, method returned: #{meth}"
   meth
@@ -114,6 +114,8 @@ _findMethodArgs = (eventObj) ->
       args.push eventObj.targetSelector
     when 'typedKeys'
       args.push eventObj._keys.join ''
+    when 'keypress'
+      args.push String.fromCharCode(eventObj.eventDataJSON?.keyCode)
   _log "_findMethodArgs called, args returned: #{JSON.stringify args}"
   args
 
@@ -128,7 +130,8 @@ actionBuilder = (eventObj) ->
 
 # takes   |> eventQueue
 # returns |> actionList - list of actions(runnable methods)
-parseQueue = _.compose addExplicitWaits, consolidateKeypresses, removeUnusedEvents
+# parseQueue = _.compose addExplicitWaits, consolidateKeypresses, removeUnusedEvents
+parseQueue = _.compose addExplicitWaits, removeUnusedEvents
 
 buildList = (eventQueue) ->
   consolidateQueue = parseQueue eventQueue
