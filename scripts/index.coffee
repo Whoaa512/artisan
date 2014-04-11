@@ -174,7 +174,7 @@ args = require 'nomnom'
       abbr: 'f'
       help: 'Flag to determine if JSON should be freshly fetched. [default]: true'
       flag: true
-      default: true
+      default: false
     debug:
       abbr: 'd'
       help: 'Flag to turn on debug logging. [default]: false'
