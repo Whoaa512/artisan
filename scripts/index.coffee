@@ -5,7 +5,7 @@ wd = require 'wd'
 {readJsonSync} = require 'fs-extra'
 {fetchEventsJson} = require './getEventJson.coffee'
 LOGS_ON = no
-WAIT_TO_IGNORE = 100 # in ms
+WAIT_TO_IGNORE = 450 # in ms
 
 _log = ->
   if LOGS_ON
