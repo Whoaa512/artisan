@@ -3,7 +3,7 @@ async = require 'async'
 Jeeves = require 'jeeves'
 wd = require 'wd'
 {readJsonSync} = require 'fs-extra'
-{fetchEventsJson} = require './getEventsJson'
+{fetchEventsJson} = require './getEventJson'
 LOGS_ON = no
 
 _log = ->
